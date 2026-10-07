@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FeedSync | Student Feedback</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Playfair+Display:wght@600&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; font-family: "Poppins", sans-serif; }
+    body { margin:0; display:flex; min-height:100vh; background:linear-gradient(135deg,#eef2ff,#e0e7ff);}
+    .sidebar { width:240px; background:linear-gradient(180deg,#1e1b4b,#3730a3); color:#fff; display:flex; flex-direction:column; align-items:center; padding:25px;}
+    .sidebar img { width:70px; height:70px; border-radius:50%; margin-bottom:10px;}
+    .sidebar h2 { font-size:1.3rem; margin-bottom:35px; }
+    .nav-links { width:100%; }
+    .nav-links a { display:flex; align-items:center; gap:10px; padding:12px 15px; color:#e0e7ff; text-decoration:none; border-radius:8px; transition:0.3s ease; cursor:pointer;}
+    .nav-links a:hover { background: rgba(255,255,255,0.2); transform: translateX(5px); }
+    .notification { margin-top:auto; padding:15px 0; border-top:1px solid rgba(255,255,255,0.3); color:#cbd5e1; }
+    .main { flex:1; display:flex; flex-direction:column; }
+    .topbar { background:#fff; box-shadow:0 2px 6px rgba(0,0,0,0.1); display:flex; justify-content:space-between; align-items:center; padding:10px 25px;}
+    .topbar-left { display:flex; align-items:center; }
+    .topbar-left img { height:60px; border-radius:10px; margin-right:15px;}
+    .topbar-left h1 { font-size:1.4rem; color:#1e1b4b; font-weight:600;}
+    .profile-section { display:flex; align-items:center; gap:10px; }
+    .profile-section img { width:40px; height:40px; border-radius:50%; }
+    .profile-section button { background: linear-gradient(135deg,#4f46e5,#6366f1); border:none; border-radius:6px; color:white; padding:7px 14px; cursor:pointer; transition:0.3s ease;}
+    .profile-section button:hover { transform: scale(1.05); background:linear-gradient(135deg,#6366f1,#4338ca); }
+    .dashboard-content { flex:1; display:flex; justify-content:center; align-items:flex-start; position:relative; padding:20px; }
+    .form-container { width:820px; max-width:95%; background:white; border-radius:18px; box-shadow:0 10px 30px rgba(16,24,40,0.08); padding:28px;}
+    .form-container h2 { font-size:1.5rem; margin-bottom:10px; }
+    .hint { color:#6b7280; font-size:0.95rem; margin-bottom:12px; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+    label { display:block; font-weight:500; margin-bottom:6px; color:#1e1b4b; font-size:0.95rem; }
+    input[type="text"], select, textarea { width:100%; padding:10px 12px; border-radius:10px; border:1px solid #e6e9fb; background:#fbfdff; font-size:0.95rem; outline:none; }
+    textarea { min-height:110px; resize:vertical; }
+    .checkbox-row { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+    .rating { display:flex; gap:8px; align-items:center; margin:10px 0 18px; }
+    .emoji { font-size:28px; cursor:pointer; padding:8px 10px; border-radius:10px; transition:0.15s; border:1px solid transparent; user-select:none; }
+    .emoji.selected { background: linear-gradient(135deg,#6366f1,#4338ca); color:white; transform:translateY(-4px); box-shadow:0 6px 18px rgba(67,56,202,0.18); border-color: rgba(255,255,255,0.08); }
+    .actions { display:flex; gap:12px; align-items:center; margin-top:10px; }
+    .btn-primary { background: linear-gradient(135deg,#6366f1,#4338ca); color:#fff; padding:10px 16px; border-radius:10px; border:none; font-weight:600; cursor:pointer; }
+    .btn-secondary { padding:10px 12px; border-radius:10px; border:1px solid #e6e9fb; background:white; cursor:pointer; }
+    .msg { margin-top:10px; font-weight:600; }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <img src="logo.png" alt="FeedSync Logo">
+  <h2>FeedSync</h2>
+  <div class="nav-links">
+    <a id="backDashboard">⬅ Back to Dashboard</a>
+  </div>
+  <div style="margin-top:auto; width:100%; text-align:center; padding:10px 0; border-top:1px solid rgba(255,255,255,0.3);">
+    <p style="margin:6px 0; font-size:0.9rem;">📞 +63 961 077 6611</p>
+    <p style="margin:6px 0; font-size:0.9rem;">📧 info@icct.edu.ph</p>
+    <div class="notification">🔔 Notifications</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <img src="Caintamain.png" alt="Campus">
+      <h1>FeedSync | Feedback Form</h1>
+    </div>
+    <div class="profile-section">
+      <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Profile">
+      <span id="usernameDisplay" style="font-weight:600; color:#1e1b4b;"></span>
+    </div>
+  </div>
+
+  <div class="dashboard-content">
+    <div class="form-container">
+      <h2>Submit Student Feedback</h2>
+      <p class="hint">Fill out the form below. Check "Submit anonymously" to hide your name & ID — they will be stored as "Anonymous".</p>
+
+      <form id="feedbackForm">
+        <div class="grid">
+          <div>
+            <label for="fullName">Full name</label>
+            <input type="text" id="fullName" placeholder="Full Name" required>
+          </div>
+          <div>
+            <label for="studentId">Student ID</label>
+            <input type="text" id="studentId" placeholder="LFCA****" required>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div>
+            <label for="course">Course</label>
+            <input type="text" id="course" placeholder="Course" required>
+          </div>
+          <div>
+            <label for="yearLevel">Year Level</label>
+            <select id="yearLevel" required>
+              <option value="">Select year</option>
+              <option>1st Year</option>
+              <option>2nd Year</option>
+              <option>3rd Year</option>
+              <option>4th Year</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <label for="feedbackArea">Feedback Area</label>
+          <select id="feedbackArea" required>
+            <option value="">Select area</option>
+            <option value="Administration">Administration</option>
+            <option value="Facilities">Facilities</option>
+            <option value="Faculty">Faculty</option>
+            <option value="Student Officers">Student Officers</option>
+            <option value="Students">Students</option>
+            <option value="Class/Lecture">Class/Lecture</option>
+          </select>
+        </div>
+
+        <div class="row" id="subAreaGroup" style="display:none;">
+          <label id="subAreaLabel"></label>
+          <select id="subArea"></select>
+        </div>
+
+        <div class="row" id="roomGroup" style="display:none;">
+          <label for="roomNumber">Room Number/Area</label>
+          <input type="text" id="roomNumber" placeholder="e.g., Room 302">
+        </div>
+
+        <div class="row" id="facultyCategoryGroup" style="display:none;">
+          <label for="facultyCategory">Program Category</label>
+          <select id="facultyCategory">
+            <option value="">Select Program Type</option>
+            <option value="Degree">Bachelor / Degree Programs</option>
+            <option value="TechVoc">Technical-Vocational / Certificate Programs</option>
+          </select>
+        </div>
+
+        <div class="row" id="facultyProgramGroup" style="display:none;">
+          <label for="facultyProgram">Select Program</label>
+          <select id="facultyProgram"></select>
+        </div>
+
+        <div class="row" id="specificProgramGroup" style="display:none;">
+          <label for="specificProgram">Specify Program</label>
+          <input type="text" id="specificProgram" placeholder="e.g., BSIT, BSHM, HRM NCII, ICT NCII">
+        </div>
+
+        <div id="facultyTeacherNameContainer" style="display:none;">
+          <label>Specific Teacher Name (optional)</label>
+          <input type="text" id="facultyTeacherName" placeholder="Enter teacher's name (optional)">
+        </div>
+
+        <div id="studentOfficerNameContainer" style="display:none;">
+          <label>Name of Specific Student Officer (optional)</label>
+          <input type="text" id="studentOfficerName" placeholder="Enter name (optional)">
+        </div>
+
+        <div id="studentNameContainer" style="display:none;">
+          <label>Name of Specific Student (optional)</label>
+          <input type="text" id="studentName" placeholder="Enter name (optional)">
+        </div>
+
+        <div id="classDetailsContainer" style="display:none;">
+          <label>Time & Date</label>
+          <input type="text" id="classTimeDate" placeholder="Ex: 10:30AM - Nov 8, 2025">
+          <label>Room Number/Area (if on-site)</label>
+          <input type="text" id="classRoom" placeholder="Ex: Room 203 or Online">
+          <label>Teacher</label>
+          <input type="text" id="classTeacher" placeholder="Enter teacher name">
+          <label>Subject</label>
+          <input type="text" id="classSubject" placeholder="Ex: Data Structures">
+        </div>
+
+        <div id="adminSpecificNameContainer" style="display:none;">
+          <label>Specific Staff Name (optional)</label>
+          <input type="text" id="adminSpecificName" placeholder="Enter name (optional)">
+        </div>
+
+        <div class="row">
+          <label>Rating</label>
+          <div class="rating" role="radiogroup" aria-label="rating">
+            <div class="emoji" data-value="1" title="Very unhappy">😡</div>
+            <div class="emoji" data-value="2" title="Unhappy">😞</div>
+            <div class="emoji" data-value="3" title="Neutral">😐</div>
+            <div class="emoji" data-value="4" title="Happy">🙂</div>
+            <div class="emoji" data-value="5" title="Very happy">😍</div>
+          </div>
+          <input type="hidden" id="rating" value="3">
+        </div>
+
+        <div class="row">
+          <label for="comments">Comments / Feedback</label>
+          <textarea id="comments" placeholder="Write your feedback..." required></textarea>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="anonymous" />
+          <label for="anonymous">Submit anonymously</label>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn-primary">Send Feedback</button>
+          <button type="button" class="btn-secondary" id="clearBtn">Clear</button>
+          <span class="msg" id="statusMsg"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { auth, db } from "./firebase.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+auth.onAuthStateChanged(user => {
+  if(user) document.getElementById("usernameDisplay").textContent = user.email.split("@")[0];
+});
+
+document.getElementById("backDashboard").addEventListener("click", () => {
+  window.location.href = "student-dashboard.html";
+});
+
+const feedbackAreaEl = document.getElementById("feedbackArea");
+const subAreaGroup = document.getElementById("subAreaGroup");
+const subAreaLabel = document.getElementById("subAreaLabel");
+const subArea = document.getElementById("subArea");
+const roomGroup = document.getElementById("roomGroup");
+const roomNumber = document.getElementById("roomNumber");
+const facultyCategoryGroup = document.getElementById("facultyCategoryGroup");
+const facultyCategory = document.getElementById("facultyCategory");
+const facultyProgramGroup = document.getElementById("facultyProgramGroup");
+const facultyProgram = document.getElementById("facultyProgram");
+const specificProgramGroup = document.getElementById("specificProgramGroup");
+const specificProgram = document.getElementById("specificProgram");
+const facultyTeacherNameContainer = document.getElementById("facultyTeacherNameContainer");
+const facultyTeacherName = document.getElementById("facultyTeacherName");
+const studentOfficerNameContainer = document.getElementById("studentOfficerNameContainer");
+const studentOfficerName = document.getElementById("studentOfficerName");
+const studentNameContainer = document.getElementById("studentNameContainer");
+const studentName = document.getElementById("studentName");
+const classDetailsContainer = document.getElementById("classDetailsContainer");
+const classTimeDate = document.getElementById("classTimeDate");
+const classRoom = document.getElementById("classRoom");
+const classTeacher = document.getElementById("classTeacher");
+const classSubject = document.getElementById("classSubject");
+const adminSpecificNameContainer = document.getElementById("adminSpecificNameContainer");
+const adminSpecificName = document.getElementById("adminSpecificName");
+
+const feedbackForm = document.getElementById("feedbackForm");
+const fullNameEl = document.getElementById("fullName");
+const studentIdEl = document.getElementById("studentId");
+const courseEl = document.getElementById("course");
+const yearLevelEl = document.getElementById("yearLevel");
+const commentsEl = document.getElementById("comments");
+const ratingHidden = document.getElementById("rating");
+const emojis = document.querySelectorAll(".emoji");
+const anonymousChk = document.getElementById("anonymous");
+const clearBtn = document.getElementById("clearBtn");
+const statusMsg = document.getElementById("statusMsg");
+
+const adminOptions = ["Registrar","Cashier","Accounting","Student Affairs","Admission","Human Resources","IT Support","Online Student Portal","Enrollment (On-site)","Enrollment (Online)"];
+const degreePrograms = ["College of Arts & Sciences","College of Business & Accountancy","College of Computer Studies","College of Education","International School of Hospitality & Tourism Management","College of Criminology & Administration","College of Engineering & Digital Technology","College of Health Sciences"];
+const techVocPrograms = ["Hotel & Restaurant Services","Information & Communication Technology Services","Health Care Services","Business & Office Operations"];
+
+function populateSelect(select, options){
+  select.innerHTML = `<option value="">Select option</option>`;
+  options.forEach(v => select.insertAdjacentHTML("beforeend", `<option>${v}</option>`));
+}
+
+function resetAllSections(){
+  subAreaGroup.style.display = "none";
+  roomGroup.style.display = "none";
+  facultyCategoryGroup.style.display = "none";
+  facultyProgramGroup.style.display = "none";
+  specificProgramGroup.style.display = "none";
+  facultyTeacherNameContainer.style.display = "none";
+  studentOfficerNameContainer.style.display = "none";
+  studentNameContainer.style.display = "none";
+  classDetailsContainer.style.display = "none";
+  adminSpecificNameContainer.style.display = "none";
+}
+
+feedbackAreaEl.addEventListener("change", () => {
+  resetAllSections();
+  const area = feedbackAreaEl.value;
+  if(area==="Administration"){
+    subAreaGroup.style.display="block";
+    subAreaLabel.textContent="Administrative Office";
+    populateSelect(subArea, adminOptions);
+    adminSpecificNameContainer.style.display="block";
+  }
+  if(area==="Facilities") roomGroup.style.display="block";
+  if(area==="Faculty") facultyCategoryGroup.style.display="block";
+  if(area==="Student Officers") studentOfficerNameContainer.style.display="block";
+  if(area==="Students") studentNameContainer.style.display="block";
+  if(area==="Class/Lecture") classDetailsContainer.style.display="block";
+});
+
+facultyCategory.addEventListener("change", () => {
+  if(facultyCategory.value==="Degree") populateSelect(facultyProgram, degreePrograms);
+  if(facultyCategory.value==="TechVoc") populateSelect(facultyProgram, techVocPrograms);
+  facultyProgramGroup.style.display = facultyCategory.value ? "block" : "none";
+  specificProgramGroup.style.display = "block";
+  facultyTeacherNameContainer.style.display = "block";
+});
+
+emojis.forEach(e => e.addEventListener("click", () => {
+  emojis.forEach(em=>em.classList.remove("selected"));
+  e.classList.add("selected");
+  ratingHidden.value = e.dataset.value;
+}));
+
+clearBtn.addEventListener("click", () => feedbackForm.reset());
+
+feedbackForm.addEventListener("submit", async e=>{
+  e.preventDefault();
+  const data = {
+    fullName: anonymousChk.checked ? "Anonymous" : fullNameEl.value,
+    studentId: anonymousChk.checked ? "Anonymous" : studentIdEl.value,
+    course: courseEl.value,
+    yearLevel: yearLevelEl.value,
+    feedbackArea: feedbackAreaEl.value,
+    subArea: subArea.value || "",
+    roomNumber: roomNumber.value || "",
+    facultyCategory: facultyCategory.value || "",
+    facultyProgram: facultyProgram.value || "",
+    specificProgram: specificProgram.value || "",
+    facultyTeacherName: facultyTeacherName.value || "",
+    studentOfficerName: studentOfficerName.value || "",
+    studentName: studentName.value || "",
+    classTimeDate: classTimeDate.value || "",
+    classRoom: classRoom.value || "",
+    classTeacher: classTeacher.value || "",
+    classSubject: classSubject.value || "",
+    adminSpecificName: adminSpecificName.value || "",
+    rating: ratingHidden.value,
+    comments: commentsEl.value,
+    timestamp: serverTimestamp()
+  };
+  try{
+    await addDoc(collection(db,"studentFeedback"), data);
+    statusMsg.textContent = "✅ Feedback submitted successfully!";
+    feedbackForm.reset();
+    resetAllSections();
+  }catch(err){
+    console.error(err);
+    statusMsg.textContent = "❌ Failed to submit feedback.";
+  }
+});
+</script>
+</body>
+</html>

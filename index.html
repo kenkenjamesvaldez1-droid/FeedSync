@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FeedSync — Login</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: url("caintamain.png") no-repeat center center/cover;
+      font-family: "Poppins", sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+
+    .login-card {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      border-radius: 18px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+      padding: 45px 35px;
+      width: 360px;
+      text-align: center;
+      color: #fff;
+      animation: fadeIn 0.7s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    p.sub {
+      color: #e5e7eb;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
+      outline: none;
+      transition: 0.2s ease;
+      color: #111827;
+    }
+
+    input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 6px rgba(99, 102, 241, 0.5);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: linear-gradient(135deg, #6366f1, #4338ca);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #818cf8, #3730a3);
+    }
+
+    .muted {
+      color: #d1d5db;
+      font-size: 0.9rem;
+      margin-top: 15px;
+    }
+
+    a {
+      color: #c7d2fe;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-card">
+    <img src="logo.png" alt="FeedSync Logo" class="logo">
+    <h2>Welcome to FeedSync</h2>
+    <p class="sub">Cainta Main Campus — Satellite</p>
+
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Enter your email" required />
+      <input type="password" id="password" placeholder="Enter your password" required />
+      <button type="submit" class="btn">Login</button>
+    </form>
+
+    <p id="loginMsg" class="muted"></p>
+    <p class="muted">Don’t have an account? <a href="register.html">Create one</a></p>
+  </div>
+
+
+  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    const loginForm = document.getElementById("loginForm");
+    const loginMsg = document.getElementById("loginMsg");
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      try {
+       
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+
+        if (userDoc.exists()) {
+          const role = userDoc.data().role;
+          console.log("User Role:", role); 
+
+          loginMsg.textContent = "✅ Login successful! Redirecting...";
+          loginMsg.style.color = "lightgreen";
+
+
+setTimeout(() => {
+  switch (role) {
+    case "admin":
+      window.location.href = "admindashboard.html";
+      break;
+    case "student":
+      window.location.href = "student-dashboard.html";
+      break;
+    case "guest":
+      window.location.href = "guestdashboard.html";
+      break;
+  
+    default:
+      alert("⚠️ Unknown role. Contact admin.");
+  }
+}, 1200);
+
+
+        } else {
+          loginMsg.textContent = "⚠️ No user data found. Please register again.";
+          loginMsg.style.color = "yellow";
+        }
+
+      } catch (err) {
+        loginMsg.textContent = "❌ " + err.message;
+        loginMsg.style.color = "#ffbaba";
+      }
+    });
+  </script>
+</body>
+</html>
+

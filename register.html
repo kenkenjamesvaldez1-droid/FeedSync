@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FeedSync — Register</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #6366f1, #a5b4fc);
+      font-family: "Poppins", sans-serif;
+    }
+
+    .register-card {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      border-radius: 18px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+      padding: 45px 35px;
+      width: 360px;
+      text-align: center;
+      color: #1e1b4b;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #c7d2fe;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 6px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: linear-gradient(135deg, #6366f1, #4338ca);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #818cf8, #3730a3);
+    }
+
+    .muted {
+      color: #6b7280;
+      font-size: 0.9rem;
+      margin-top: 15px;
+    }
+
+    a {
+      color: #4338ca;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="register-card">
+    <h2>Create Account</h2>
+
+    <form id="registerForm">
+      <input type="text" id="name" placeholder="Full Name" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      
+     <!-- Role Selector -->
+<select id="role" required>
+  <option value="" disabled selected>Select Role</option>
+  <option value="admin">Admin</option>
+  <option value="student">Student</option>
+  <option value="guest">Guest</option>
+  
+</select>
+
+
+      <button type="submit" class="btn">Register</button>
+    </form>
+
+    <p id="registerMsg" class="muted"></p>
+    <p class="muted">Already have an account? <a href="index.html">Login here</a></p>
+  </div>
+
+  <!-- Firebase Register Script -->
+  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    const registerForm = document.getElementById("registerForm");
+    const registerMsg = document.getElementById("registerMsg");
+
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const role = document.getElementById("role").value;
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Save user data in Firestore
+        await setDoc(doc(db, "users", user.uid), {
+          name,
+          email,
+          role
+        });
+
+        registerMsg.textContent = "✅ Account created successfully! Redirecting to login...";
+        registerMsg.style.color = "green";
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1500);
+      } catch (error) {
+        registerMsg.textContent = "❌ " + error.message;
+        registerMsg.style.color = "red";
+      }
+    });
+  </script>
+</body>
+</html>

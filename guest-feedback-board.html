@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FeedSync | Guest Feedback</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet" />
+<style>
+*{box-sizing:border-box;font-family:"Poppins",sans-serif;}
+body{margin:0;display:flex;min-height:100vh;background:linear-gradient(135deg,#eef2ff,#e0e7ff);}
+.sidebar{width:240px;background:linear-gradient(180deg,#1e1b4b,#3730a3);color:#fff;display:flex;flex-direction:column;align-items:center;padding:25px;}
+.sidebar img{width:70px;height:70px;border-radius:50%;margin-bottom:10px;}
+.sidebar h2{font-size:1.3rem;margin-bottom:25px;text-align:center;}
+.nav-links{width:100%;}
+.nav-links a{display:flex;align-items:center;gap:10px;padding:12px 15px;color:#e0e7ff;text-decoration:none;border-radius:8px;transition:0.3s ease;}
+.nav-links a:hover{background: rgba(255,255,255,0.2); transform: translateX(5px);}
+.notification{margin-top:auto;padding:15px 0;border-top:1px solid rgba(255,255,255,0.3);color:#cbd5e1;text-align:center;}
+
+.main{flex:1;display:flex;flex-direction:column;}
+.topbar{background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.1);display:flex;justify-content:space-between;align-items:center;padding:10px 25px;}
+.topbar-left{display:flex;align-items:center;}
+.topbar-left img{height:60px;border-radius:10px;margin-right:15px;}
+.topbar-left h1{font-size:1.4rem;color:#1e1b4b;font-weight:600;}
+.profile-section{display:flex;align-items:center;gap:8px;}
+.profile-section img{width:40px;height:40px;border-radius:50%;}
+.profile-section span{font-weight:500;color:#1e1b4b;}
+.profile-section button{background:linear-gradient(135deg,#4f46e5,#6366f1);border:none;border-radius:6px;color:white;padding:7px 14px;cursor:pointer;transition:0.3s ease;}
+.profile-section button:hover{transform:scale(1.05);background:linear-gradient(135deg,#6366f1,#4338ca);}
+
+.dashboard-content{flex:1;display:flex;justify-content:center;align-items:flex-start;padding:20px;}
+.card{width:820px;max-width:95%;display:grid;grid-template-columns:360px 1fr;gap:24px;background:white;border-radius:18px;box-shadow:0 10px 30px rgba(16,24,40,0.08);padding:28px;align-items:start;}
+.left{background: linear-gradient(180deg,#1e1b4b,#3730a3);color:#fff;padding:22px;border-radius:12px;display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center;}
+.left img{width:92px;height:92px;border-radius:50%;}
+.left h3{margin:6px 0 0;font-size:1.1rem;}
+.left p{margin:0;opacity:0.9;font-size:0.9rem;}
+.back-btn{margin-top:auto;background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.18);padding:8px 12px;border-radius:8px;cursor:pointer;text-decoration:none;font-weight:600;}
+
+.form{padding:6px 4px;}
+.form h2{margin:0 0 6px;font-size:1.25rem;color:#1e1b4b;}
+.hint{color:#6b7280;font-size:0.95rem;margin-bottom:12px;}
+label{display:block;font-weight:500;margin-bottom:6px;color:#1e1b4b;font-size:0.95rem;}
+input[type="text"],select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #e6e9fb;background:#fbfdff;font-size:0.95rem;outline:none;margin-bottom:12px;}
+textarea{min-height:110px;resize:vertical;}
+.toolbox{display:flex;gap:6px;margin-bottom:6px;}
+.toolbox button{border:none;background:#e5e7eb;padding:6px 8px;border-radius:6px;cursor:pointer;font-size:0.9rem;}
+.actions{display:flex;gap:12px;align-items:center;margin-top:10px;}
+.btn-primary{background: linear-gradient(135deg,#6366f1,#4338ca);color:#fff;padding:10px 16px;border-radius:10px;border:none;font-weight:600;cursor:pointer;}
+.msg{margin-top:10px;font-weight:600;}
+@media (max-width:880px){.card{grid-template-columns:1fr;}.left{order:2;}}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <img src="logo.png" alt="FeedSync Logo">
+  <h2>FeedSync Guest</h2>
+
+  <div class="nav-links">
+    <a href="guest-dashboard.html">🏠 Dashboard</a>
+    <a href="guest-feedback-board.html">📝 Feedback Board</a>
+    <a href="guest-updates.html">👀 View Updates</a>
+    <a href="guest-about.html">ℹ️ About</a>
+  </div>
+
+  <div class="contact-details">
+    <span>📞 +63.961.077.6611</span>
+    <span>✉️ info@icct.edu.ph</span>
+  </div>
+
+  <div class="notification">🔔 Campus Announcements</div>
+</div>
+
+
+<div class="main">
+<div class="topbar">
+<div class="topbar-left">
+<img src="Caintamain.png" alt="Campus">
+<h1>FeedSync | Guest Feedback</h1>
+</div>
+<div class="profile-section">
+<img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Guest Profile">
+<span>Guest</span>
+<button id="logoutBtn">Logout</button>
+</div>
+</div>
+
+<div class="dashboard-content">
+<div class="card">
+<div class="left">
+<img src="logo.png" alt="logo">
+<h3>FeedSync — Guest Feedback</h3>
+<p>Share your feedback to help the school improve — your input matters.</p>
+<a class="back-btn" href="guest-dashboard.html">⬅ Back to Dashboard</a>
+</div>
+
+<div class="form">
+<h2>Submit Feedback</h2>
+<p class="hint">Guests can submit feedback on Administration, Facilities, or Students only.</p>
+
+<form id="guestFeedbackForm">
+<div class="row">
+<label for="name">Your Name</label>
+<input type="text" id="name" placeholder="Enter your name (Guest)" required>
+</div>
+
+<div class="row">
+<label for="area">Feedback Area</label>
+<select id="area" required>
+<option value="">Select area</option>
+<option>Administration</option>
+<option>Facilities</option>
+<option>Students</option>
+</select>
+</div>
+
+<div class="row">
+<label for="comments">Comments / Feedback</label>
+<div class="toolbox">
+<button type="button" data-insert="📷">📷</button>
+<button type="button" data-insert="🔗">🔗</button>
+<button type="button" data-insert="🎥">🎥</button>
+<button type="button" data-insert="📎">📎</button>
+<button type="button" data-insert="😊">😊</button>
+</div>
+<textarea id="comments" placeholder="Write your feedback..." required></textarea>
+</div>
+
+<div class="actions">
+<button type="submit" class="btn-primary">Send Feedback</button>
+<span class="msg" id="statusMsg"></span>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+
+<script type="module">
+import { db, auth, signOut } from "./firebase.js";
+import { addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+await signOut(auth);
+window.location.href="index.html";
+});
+
+const feedbackForm = document.getElementById("guestFeedbackForm");
+const commentsEl = document.getElementById("comments");
+const statusMsg = document.getElementById("statusMsg");
+const toolboxButtons = document.querySelectorAll(".toolbox button");
+
+toolboxButtons.forEach(btn=>{
+btn.addEventListener("click",()=>{
+commentsEl.value += btn.dataset.insert;
+commentsEl.focus();
+});
+});
+
+feedbackForm.addEventListener("submit", async (e)=>{
+e.preventDefault();
+const payload = {
+role:"guest",
+name:document.getElementById("name").value.trim() || "Guest",
+area:document.getElementById("area").value,
+comments:commentsEl.value.trim(),
+createdAt:serverTimestamp()
+};
+try{
+await addDoc(collection(db,"feedback"),payload);
+statusMsg.style.color="green";
+statusMsg.textContent="✅ Feedback submitted successfully!";
+feedbackForm.reset();
+}catch(err){
+statusMsg.style.color="red";
+statusMsg.textContent="❌ Error: "+err.message;
+}
+});
+</script>
+</body>
+</html>

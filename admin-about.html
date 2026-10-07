@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FeedSync | About</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  body{margin:0;display:flex;min-height:100vh;background:#eef2ff;font-family:Poppins;}
+  .sidebar{width:240px;background:linear-gradient(180deg,#1e1b4b,#3730a3);color:#fff;padding:25px;display:flex;flex-direction:column;}
+  .sidebar img{width:70px;height:70px;border-radius:50%;margin-bottom:10px;}
+  .sidebar h2{margin-bottom:35px;text-align:center;}
+  .nav-links a{display:block;padding:12px 15px;color:#e0e7ff;text-decoration:none;border-radius:8px;margin-bottom:5px;cursor:pointer;}
+  .nav-links a:hover{background:rgba(255,255,255,0.2);}
+  .main{flex:1;padding:25px;}
+  h1{color:#1e1b4b;font-size:1.8rem;margin-bottom:20px;}
+  .content-box{background:white;padding:25px;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,0.08);line-height:1.6;}
+</style>
+</head>
+<script type="module">
+import { auth, db } from "./firebase.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+// Verify admin access
+auth.onAuthStateChanged(async (user) => {
+  if (!user) {
+    window.location.href = "index.html"; // Not logged in
+    return;
+  }
+
+  const userRef = doc(db, "users", user.uid);
+  const userSnap = await getDoc(userRef);
+
+  if (!userSnap.exists() || userSnap.data().role !== "admin") {
+    alert("Access denied. Admins only.");
+    window.location.href = "index.html";
+  }
+});
+</script>
+
+<body>
+
+<div class="sidebar">
+  <img src="logo.png">
+  <h2>FeedSync</h2>
+  <div class="nav-links">
+    <a href="admindashboard.html">🏠 Dashboard</a>
+    <a href="adminstudentfeedback.html">📝 Student Feedback</a>
+    <a href="admin-reevaluation-updates.html">🔄 Re-evaluation Updates</a>
+    <a href="admin-about.html" style="background:rgba(255,255,255,0.25);">ℹ️ About FeedSync</a>
+  </div>
+</div>
+
+<div class="main">
+  <h1>About FeedSync</h1>
+  <div class="content-box">
+    FeedSync is a centralized platform used to collect and manage academic feedback across ICCT Colleges – Cainta Campus. It improves administrative decision-making by providing organized insights on facilities, departments, administrative services, and student support systems. The system ensures that feedback is accessible, evaluated properly, and used to support a more responsive and student-centered school environment.
+  </div>
+</div>
+
+<script type="module">
+import { auth, db } from "./firebase.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+auth.onAuthStateChanged(async user => {
+  if(!user){ window.location.href = "index.html"; return; }
+
+  const snap = await getDoc(doc(db, "users", user.uid));
+  if(!snap.exists() || snap.data().role !== "admin"){
+    window.location.href = "index.html";
+  }
+});
+</script>
+
+</body>
+</html>
