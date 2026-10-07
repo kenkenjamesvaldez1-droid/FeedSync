@@ -2,7 +2,7 @@
 
 ## 📸 Preview
 
-![FeedSync Dashboard](feedsync-dashboard.png)
+![FeedSync Dashboard](feedsync-dashboard.png.png)
 
 ## 📌 About the Project
 
