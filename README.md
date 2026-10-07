@@ -1,5 +1,9 @@
 # 💬 FeedSync
 
+## 📸 Preview
+
+![FeedSync Dashboard](feedsync-dashboard.png)
+
 ## 📌 About the Project
 
 FeedSync is a feedback management application designed to
